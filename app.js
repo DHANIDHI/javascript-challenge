@@ -1,103 +1,201 @@
 // from data.js
+let tableData = data;
 
-// var tableData = data;
-
-// // YOUR CODE HERE!
-// From data.js
-var tableData = data;
-
-// Get a reference to the table body
-var tbody = d3.select("#tbody");
-
-// Getting a reference to the filter table button 
-var filterBtn = d3.select("#filter-btn");
-
-// Getting a reference to the input element on the page with the id property set to 'input-field'
-var inputField = d3.select("#datetime");
-
-var submit = d3.select("#filter-btn"); 
-
-// Select the input element and get the raw HTML node.
-var inputDate = d3.select("#datetime");
-
-
-function loadTableData(dataRows) {
-  // console.log('In Load Table Data');
-  document.getElementById('table-content').innerHTML="";
-  // alert('cLEARING TABLE');
-  // tbody.html("");
-  d3.select("tbody")
+// YOUR CODE HERE!
+console.log("Hello");
   
-    .selectAll("tr")
-  
-    .data(dataRows)
-  
-    .enter()
-  
-    .append("tr")
-  
-    .html(function(d) {
-  
-      return `<td>${d.datetime}</td> <td>${d.city}</td> <td>${d.state}</td> <td>${d.country}</td>
-  
-              <td>${d.shape}</td> <td>${d.durationMinutes}</td> <td>${d.comments}</td>     `;
-  
-    });
-  
-   
-  }
+let i = Math.floor(Math.random() * 16777215).toString(16);
+console.log(i);
+d3.select("#myBtn").style("background-color", `#${i}`);
+document.getElementById("tru").onmousemove = function(event) {myFunction(event)};
 
-loadTableData(tableData);
+function myFunction(e) 
+{
+    let i = Math.floor(Math.random() * 16777215).toString(16);
+    d3.select("#myBtn").style("background-color", `#${i}`);
+    // console.log(x);
+}
 
-// 
-//Clear all previuos data from UFO table
-// function buildTable(tableData) {
-//   tbody.html("");
+let tableItem = -1;
 
-// // Iterate through each UFO Sighting event, through all elements of data dictionary,
-// // and build HTML UFO Sightings table
-//   tableData.forEach((rec) => {
+let dropdown_click = d3.select(".first");
+let dropdown_click2 = d3.select(".second");
 
-//   var row = tbody.append("tr");
-// // Populate each row of UFO table
-//   Object.entries(rec).forEach(([key, value]) => {
-//   // populate each column for current row
-//   var cell = row.append("td");      
-//   cell.text(value);
-// });
-
-// })};
-
-
-// var submit = d3.select("#filter-btn"); 
-
-// // Select the input element and get the raw HTML node.
-// var inputDate = d3.select("#datetime");
-
-
-// User clicks the button to filter data
-
-submit.on("click", function() {
-
-  // Prevent the page from refreshing
-  d3.event.preventDefault();
-
-  // Get the value property of the input element
-  var inputValue = inputDate.property("value");
-  console.log("checksubmit1")
-  console.log(inputValue);
-  console.log("checksubmit2")
-
-  // Create Filtered dataset based on InputValue entered by user
-  if (inputValue) {
-  var filterdata = tableData.filter(onerec => onerec.datetime === inputValue);}
-  console.log('Filtering Data');
-  console.log(filterdata);
- 
-  // Build new UFO Table with the filtered subset of UFO Sighting data
-  // buildTable(filterdata);
-  tbody.html("");
-  loadTableData(filterdata);
+dropdown_click.on("click", function()
+{
+    d3.select("input").attr("placeholder", "Enter a date");
+    d3.select(".form-control").property("value", "");
+    dropdown_click.style("background-color", "#DF691A");
+    dropdown_click2.style("background-color", "transparent");
+    d3.select("#dropdownMenuButton").style("background-color", "cornflowerblue");
+    d3.select(".check-input").text("");
+    tableItem = 0;
+});
+dropdown_click2.on("click", function()
+{
+    d3.select("input").attr("placeholder", "Enter a city");
+    d3.select(".form-control").property("value", "");
+    dropdown_click.style("background-color", "transparent");
+    dropdown_click2.style("background-color", "#DF691A");
+    d3.select("#dropdownMenuButton").style("background-color", "cornflowerblue");
+    d3.select(".check-input").text("");
+    tableItem = 1;
 });
 
-// loadTableData(tableData);
+let old_tbody = document.getElementsByTagName("table")[0];
+
+// ---------------------------------------------
+// inputSearch = "1/1/2010";
+// inputSearch2 = "01/1/2010";
+// let a = new Date(inputSearch);
+// let b = new Date(inputSearch2);
+// console.log(a.getTime() === b.getTime());
+// ---------------------------------------------
+
+// Append data array of objects to html table only first time
+let tempTable = document.getElementsByTagName("table")[0];
+for (let i = 0; i < tableData.length; i++)
+{
+    let newRow = tempTable.insertRow(1);
+
+    let cell0 = newRow.insertCell(0);
+    let cell1 = newRow.insertCell(1);
+    let cell2 = newRow.insertCell(2);
+    let cell3 = newRow.insertCell(3);
+    let cell4 = newRow.insertCell(4);
+    let cell5 = newRow.insertCell(5);
+    let cell6 = newRow.insertCell(6);
+    
+    cell0.innerHTML = tableData[i].datetime;
+    cell1.innerHTML = tableData[i].city;
+    cell2.innerHTML = tableData[i].state;
+    cell3.innerHTML = tableData[i].country;
+    cell4.innerHTML = tableData[i].shape;
+    cell5.innerHTML = tableData[i].durationMinutes;
+    cell6.innerHTML = tableData[i].comments;
+}
+
+setSearch = false;
+ 
+// Event handler for filter table button click
+let submit = d3.select("#myBtn");
+submit.on("click", function()
+{
+    d3.event.preventDefault();
+
+    console.log(tableItem);
+
+    // Check if input is valid
+    inputSearch = document.getElementById("datetime").value;
+    if (inputSearch === "")
+    {
+        if (d3.select(".check-input").text() === "")
+        {
+            d3.select(".check-input").text("*please enter a vaild input");
+        }
+        return;
+    }
+    else if (tableItem === -1)
+    {
+        if (d3.select(".check-input").text() === "" || d3.select(".check-input").text() === "*please enter a vaild input")
+        {
+            d3.select(".check-input").text("*please select a category");
+        }
+        return;
+    }
+    else
+    {
+        d3.select(".check-input").text("");
+    }
+
+    // Clear table data
+    if (setSearch === false)
+    {
+        for (let i = 0; i < tableData.length; i++)
+        {
+            tableRow = document.getElementsByTagName("tr")[1];
+            tableRow.parentNode.removeChild(tableRow);
+        }
+    }
+
+    setSearch = true;
+
+    if (tableItem === 0)
+    {
+        // Check if input is already in the table
+        let tempTable = document.getElementsByTagName("table")[0]; 
+        for (let i = 1; i < tempTable.rows.length; i++)
+        {
+            if (tempTable.rows.item(i).cells.item(0).innerHTML === inputSearch)
+            {
+                console.log("UFO sighting(s) already in table!")
+                d3.select(".check-input").text("UFO sighting(s) already in table.");
+                return;
+            }
+        }
+        // Loops through table data and appends new rows if the data date matches the input
+        for (let i = 0; i < tableData.length; i++)
+        {
+            if (tableData[i].datetime === inputSearch)
+            {
+                set = true;
+                let newRow = tempTable.insertRow(1);
+
+                let cell0 = newRow.insertCell(0);
+                let cell1 = newRow.insertCell(1);
+                let cell2 = newRow.insertCell(2);
+                let cell3 = newRow.insertCell(3);
+                let cell4 = newRow.insertCell(4);
+                let cell5 = newRow.insertCell(5);
+                let cell6 = newRow.insertCell(6);
+                
+                cell0.innerHTML = tableData[i].datetime;
+                cell1.innerHTML = tableData[i].city;
+                cell2.innerHTML = tableData[i].state;
+                cell3.innerHTML = tableData[i].country;
+                cell4.innerHTML = tableData[i].shape;
+                cell5.innerHTML = tableData[i].durationMinutes;
+                cell6.innerHTML = tableData[i].comments;
+            }
+        }
+        d3.select(".check-input").text("Found all matching dates.");
+    }
+    if (tableItem === 1)
+    {
+        // Check if input is already in the table
+        let tempTable = document.getElementsByTagName("table")[0];
+        for (let i = 1; i < tempTable.rows.length; i++)
+        {
+            if (tempTable.rows.item(i).cells.item(1).innerHTML === inputSearch)
+            {
+                console.log("UFO sighting(s) already in table!")
+                return;
+            }
+        }
+        // Loops through table data and appends new rows if the data date matches the input
+        for (let i = 0; i < tableData.length; i++)
+        {
+            if (tableData[i].city === inputSearch)
+            {
+                set = true;
+                let newRow = tempTable.insertRow(1);
+
+                let cell0 = newRow.insertCell(0);
+                let cell1 = newRow.insertCell(1);
+                let cell2 = newRow.insertCell(2);
+                let cell3 = newRow.insertCell(3);
+                let cell4 = newRow.insertCell(4);
+                let cell5 = newRow.insertCell(5);
+                let cell6 = newRow.insertCell(6);
+                
+                cell0.innerHTML = tableData[i].datetime;
+                cell1.innerHTML = tableData[i].city;
+                cell2.innerHTML = tableData[i].state;
+                cell3.innerHTML = tableData[i].country;
+                cell4.innerHTML = tableData[i].shape;
+                cell5.innerHTML = tableData[i].durationMinutes;
+                cell6.innerHTML = tableData[i].comments;
+            }
+        }
+    }
+});
